@@ -17,13 +17,23 @@ The commands below are the planned names. Update this list when they exist.
 composer install && cp .env.example .env && php artisan key:generate
 php artisan migrate
 php artisan test                      # all tests (Pest)
-vendor/bin/pint                       # formatting
-vendor/bin/phpstan analyse            # static analysis
+vendor/bin/mago fmt                   # format
+vendor/bin/mago fmt --check           # check formatting without changing files
+vendor/bin/mago lint                  # lint
+vendor/bin/mago analyze               # static analysis
 php artisan nullspace:play            # play a turn by hand in the local harness
 php artisan nullspace:simulate        # run scripted players for many ticks
 ```
 
-Run tests, Pint and PHPStan before you finish. All three must pass.
+Run the tests and all three Mago commands (`fmt --check`, `lint`, `analyze`) before you finish. All of them must pass.
+
+## Code quality: Mago
+
+[Mago](https://mago.carthage.software) is the only formatter, linter and static analyzer. Don't add Pint, PHP-CS-Fixer, PHPStan or Psalm.
+
+- **Strictest settings.** `mago.toml` turns on every analyzer check in Mago's maximum strictness preset, enables every linter rule, and sets `minimum-fail-level = "note"` for both the linter and the analyzer, so any issue fails the run.
+- **No baselines and no ignores.** Don't add a baseline file, an `ignore` entry, a rule exclusion or an inline suppression to get code through. Fix the code. If a rule really is wrong for this project, change `mago.toml` in its own PR and explain why.
+- **Nothing is committed without passing.** Every commit must pass `mago fmt --check`, `mago lint` and `mago analyze`. CI runs all three and blocks merging when any fails.
 
 ## Architecture rules
 
